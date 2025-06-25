@@ -1128,3 +1128,141 @@ function handleMobileLayout() {
 // Chiama all'inizio e al resize
 window.addEventListener('DOMContentLoaded', handleMobileLayout);
 window.addEventListener('resize', handleMobileLayout);
+// Blocco orientamento e gestione mobile
+function setupMobileLayout() {
+  // 1. Rileva se è mobile
+  const isMobile = window.innerWidth <= 768;
+  
+  // 2. Blocca orientamento portrait (se supportato)
+  function lockPortrait() {
+    if (screen.orientation?.lock) {
+      screen.orientation.lock('portrait')
+        .catch(e => console.log("Lock orientation failed:", e));
+    }
+  }
+
+  // 3. Mostra avviso se in orizzontale
+  function checkOrientation() {
+    const warning = document.getElementById('rotateWarning');
+    if (window.innerWidth > window.innerHeight && isMobile) {
+      if (!warning) {
+        createOrientationWarning();
+      } else {
+        warning.style.display = 'flex';
+      }
+    } else if (warning) {
+      warning.style.display = 'none';
+    }
+  }
+
+  // 4. Crea avviso orientamento (se non esiste)
+  function createOrientationWarning() {
+    const warning = document.createElement('div');
+    warning.id = 'rotateWarning';
+    warning.innerHTML = `
+      <h2>🔄 Si prega di ruotare il telefono in verticale</h2>
+      <p>Per la migliore esperienza di gioco</p>
+    `;
+    Object.assign(warning.style, {
+      display: 'none',
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      width: '100%',
+      height: '100%',
+      background: '#a0d8f7',
+      zIndex: '9999',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      textAlign: 'center',
+      padding: '20px'
+    });
+    document.body.appendChild(warning);
+  }
+
+  // 5. Adatta dinamicamente elementi mobile
+  function adaptMobileElements() {
+    if (!isMobile) return;
+    
+    // Riduci animazioni per performance
+    document.documentElement.style.scrollBehavior = 'auto';
+    
+    // Ottimizza i bottoni per il touch
+    document.querySelectorAll('button').forEach(btn => {
+      btn.style.touchAction = 'manipulation';
+      btn.style.webkitTapHighlightColor = 'transparent';
+    });
+  }
+
+  // Inizializzazione
+  if (isMobile) {
+    lockPortrait();
+    createOrientationWarning();
+    adaptMobileElements();
+    
+    // Event listeners
+    window.addEventListener('resize', () => {
+      checkOrientation();
+      adaptMobileElements();
+    });
+  }
+
+  checkOrientation(); // Controllo iniziale
+}
+
+// Avvia tutto quando il DOM è pronto
+document.addEventListener('DOMContentLoaded', () => {
+  setupMobileLayout();
+  
+  // Evento speciale per iOS per forzare il ridimensionamento
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.activeElement?.blur();
+    }, 100);
+  });
+});
+
+// Gestione dinamica dei pannelli mobile
+function setupMobilePanels() {
+  const toggleShopBtn = document.getElementById('toggleShopBtn');
+  const toggleMissionsBtn = document.getElementById('toggleMissionsBtn');
+  const shopPanel = document.getElementById('shopPanel');
+  const missionsPanel = document.getElementById('missionsPanel');
+
+  if (toggleShopBtn && shopPanel) {
+    toggleShopBtn.addEventListener('click', () => {
+      shopPanel.style.display = shopPanel.style.display === 'block' ? 'none' : 'block';
+      if (shopPanel.style.display === 'block') {
+        missionsPanel.style.display = 'none';
+      }
+    });
+  }
+
+  if (toggleMissionsBtn && missionsPanel) {
+    toggleMissionsBtn.addEventListener('click', () => {
+      missionsPanel.style.display = missionsPanel.style.display === 'block' ? 'none' : 'block';
+      if (missionsPanel.style.display === 'block') {
+        shopPanel.style.display = 'none';
+      }
+    });
+  }
+}
+
+// Chiamata quando si passa alla game screen
+function initMobileGame() {
+  setupMobilePanels();
+  
+  // Chiudi pannelli quando si tocca l'acquario
+  const aquarium = document.getElementById('aquarium');
+  if (aquarium) {
+    aquarium.addEventListener('click', () => {
+      document.getElementById('shopPanel').style.display = 'none';
+      document.getElementById('missionsPanel').style.display = 'none';
+    });
+  }
+}
+
+// Aggiungi questo nella funzione startGame() dopo renderAquarium():
+// initMobileGame();

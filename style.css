@@ -750,18 +750,20 @@ header {
 }
 
 
-/* Mobile responsive */
+/* Mobile responsive - Versione consolidata */
 @media screen and (max-width: 768px) {
   #viewportWrapper {
     transform: none;
     width: 100%;
     height: 100%;
+    overflow: hidden;
   }
 
   body, html {
     overflow: auto;
     position: relative;
     height: auto;
+    touch-action: pan-y;
   }
 
   #loginScreen, #gameScreen {
@@ -775,38 +777,63 @@ header {
     flex-direction: column;
     padding: 10px;
     gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
 
   .header-section {
     width: 100%;
     justify-content: center;
+    flex-wrap: nowrap;
   }
 
   #aquarium {
     min-height: 50vh;
+    margin-bottom: 15px;
   }
 
+  /* Bottoni Shop/Missioni */
+  #toggleShopBtn,
+  #toggleMissionsBtn {
+    position: fixed;
+    z-index: 1001;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #00c0ff, #0077be);
+    border: 2px solid #005999;
+  }
+
+  #toggleShopBtn {
+    top: 60px;
+    right: 10px;
+  }
+
+  #toggleMissionsBtn {
+    top: 60px;
+    left: 10px;
+  }
+
+  /* Pannelli */
   #shopPanel {
     width: 90%;
     right: 5%;
-    bottom: 100px;
-    max-height: 50vh;
+    top: 100px;
+    max-height: 60vh;
   }
 
   #missionsPanel {
     width: 90%;
     left: 5%;
-    bottom: 80px;
-    max-height: 40vh;
+    top: 100px;
+    max-height: 60vh;
   }
 
-  #toggleShopBtn, #toggleMissionsBtn {
-    padding: 10px;
-    font-size: 0.9rem;
-  }
-
+  /* Login Screen */
   #loginScreen input {
     width: 90%;
+    max-width: 300px;
     font-size: 1rem;
   }
 
@@ -815,9 +842,12 @@ header {
     font-size: 1.2rem;
   }
 
+  /* Action Buttons */
   #actions {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 8px;
+    padding: 10px;
   }
 
   #actions button {
@@ -835,6 +865,7 @@ header {
     font-size: 1rem;
   }
 
+  /* Shop items */
   #shop > div {
     min-width: 100px;
     padding: 8px;
@@ -844,55 +875,25 @@ header {
     width: 60px;
     height: 40px;
   }
-  button, input, select {
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-}
-@media screen and (max-width: 768px) {
-  /* Posizionamento bottoni mobile */
-  #toggleShopBtn {
-    bottom: auto;
-    top: 60px;  /* Posizione sotto l'header */
-    right: 10px;
-  }
 
-  #toggleMissionsBtn {
-    bottom: auto;
-    top: 60px;  /* Stessa altezza dello shop button */
-    left: 10px;
-    right: auto;
-  }
-
-  /* Sposta i pannelli più in basso per non coprire i bottoni */
-  #shopPanel {
-    bottom: 80px;
-    top: 100px;  /* Inizia sotto i bottoni */
-  }
-
-  #missionsPanel {
-    bottom: 80px;
-    top: 100px;  /* Inizia sotto i bottoni */
-  }
-}
-
-@media screen and (max-width: 480px) {
-  /* Aggiustamenti per schermi molto piccoli */
+  /* Bottoni Shop/Missioni */
   #toggleShopBtn, 
   #toggleMissionsBtn {
-    top: 50px;  /* Ancora più in alto */
-    padding: 8px 12px;
+    top: 50px;
+    padding: 6px 10px;
     font-size: 0.8rem;
   }
 
+  /* Pannelli */
   #shopPanel,
   #missionsPanel {
-    top: 90px;  /* Più compatto */
-    max-height: 60vh;  /* Usa più spazio verticale */
+    top: 90px;
+    max-height: 55vh;
   }
-}
-#toggleShopBtn,
-#toggleMissionsBtn {
-  position: fixed;
-  z-index: 1001;  /* Sopra a tutto */
+
+  /* Touch optimization */
+  button, input, select {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
 }
