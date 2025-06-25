@@ -793,15 +793,17 @@ body {
   touch-action: manipulation;
 }
 
-@media screen and (orientation:portrait) {
-  body {
-    transform: rotate(90deg);
-    transform-origin: left top;
-    width: 100vh;
-    height: 100vw;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    overflow-x: hidden;
-  }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #a0d8f7;
+  font-family: Arial, sans-serif;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: none;
 }
+

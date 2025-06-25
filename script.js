@@ -1058,10 +1058,13 @@ let bubbles = [];
 function resizeCanvasToAquarium() {
   const aq = document.getElementById("aquarium");
   const rect = aq.getBoundingClientRect();
-  bubbleCanvas.width = rect.width;
-  bubbleCanvas.height = rect.height;
+  bubbleCanvas.width = aquarium.clientWidth;
+bubbleCanvas.height = aquarium.clientHeight;
+bubbleCanvas.style.left = 0;
+bubbleCanvas.style.top = 0;
+bubbleCanvas.style.position = 'absolute';
 
-  bubbleCanvas.style.position = "absolute";
+  
   bubbleCanvas.style.left = `${rect.left + window.scrollX}px`;
   bubbleCanvas.style.top = `${rect.top + window.scrollY}px`;
   bubbleCanvas.style.width = `${rect.width}px`;
