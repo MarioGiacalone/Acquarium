@@ -900,3 +900,87 @@ header {
     padding: 6px 10px;
   }
 }
+
+
+
+/* 📱 Mobile: layout compatto con bottoni in linea e acquario grande */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    padding: 5px 10px;
+    gap: 5px;
+  }
+
+  .header-section {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  #aquarium {
+    width: 100%;
+    height: 60vh !important;
+    max-height: 60vh;
+    margin-bottom: 6px;
+  }
+
+  #actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    padding: 5px;
+  }
+
+  #actions button,
+  .action-button,
+  #saveSection button,
+  #saveSection label {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    border-radius: 12px;
+  }
+
+  #saveSection {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    padding: 5px;
+  }
+
+  #toggleShopBtn,
+  #toggleMissionsBtn {
+    bottom: 12px;
+    right: 10px;
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
+
+  #toggleMissionsBtn {
+    bottom: 50px;
+  }
+
+  #shopPanel, #missionsPanel {
+    width: 92%;
+    left: 4%;
+    right: 4%;
+    max-height: 55vh;
+    bottom: 75px;
+  }
+
+  .fish {
+    width: 48px;
+    height: 30px;
+  }
+
+  .decoration {
+    width: 44px;
+    height: 44px;
+  }
+
+  .mission button {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+}
