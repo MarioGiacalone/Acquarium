@@ -33,7 +33,7 @@ const decorationTypes = [
   {
     id: "seaweed",
     name: "Alga",
-    img: "asset/alga.png",
+    img: "https://i.imgur.com/0vdYmRW.png",
     price: 30,
     width: 60,
     height: 100
@@ -41,7 +41,7 @@ const decorationTypes = [
   {
     id: "coral",
     name: "Corallo",
-    img: "asset/corallo.png",
+    img: "https://i.imgur.com/jqYKfXj.png",
     price: 80,
     width: 80,
     height: 60
@@ -1113,8 +1113,3 @@ function startBubbles() {
 }
 
 resizeCanvasToAquarium();
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
-    .then(() => console.log('Service Worker registrato'))
-    .catch(err => console.log('Service Worker errore:', err));
-}

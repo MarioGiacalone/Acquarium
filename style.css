@@ -175,19 +175,13 @@ header {
     border: 3px solid gold;
 }
 
-
- .decoration {
-  position: absolute;
-  width: 64px;  /* o la dimensione standard dell'immagine */
-  height: 64px;
-  cursor: grab;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  image-rendering: pixelated;
+.decoration {
+    position: absolute;
+    pointer-events: auto;
+    user-select: none;
+    border-radius: 6px;
+    cursor: pointer;
 }
-
-
 
 .decoration.selected {
     border: 3px solid gold;
@@ -748,98 +742,161 @@ header {
     color: #fff59d;
     font-size: 0.9em;
 }
-/* 📱 Ottimizzazione completa per dispositivi mobili */
-@media (max-width: 768px) {
-  body {
-    font-size: 14px;
-    padding: 0;
-    margin: 0;
-  }
 
+
+/* 📱 Ottimizzazione per schermi stretti e verticali */
+@media screen and (max-width: 480px) {
   header {
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    padding: 10px;
-    text-align: center;
+    gap: 8px;
   }
 
   .header-section {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  #aquarium {
-    width: 100%;
-    height: 50vh;
-    max-height: 50vh;
-    margin-bottom: 10px;
-  }
-
-  #actions {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 10px;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
   }
 
-  .action-button,
-  #feedAllBtn,
-  #sellSelectedBtn,
-  #editDecoBtn {
-    font-size: 1rem;
-    padding: 10px;
+  #aquarium {
+    height: 45vh !important;
+    width: 100% !important;
+    max-height: 45vh;
+    margin-bottom: 8px;
+  }
+
+  #actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
   }
 
   #saveSection {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 10px;
+    flex-direction: column;
+    align-items: center;
   }
 
   #saveSection button,
-  #saveSection label {
-    width: 45%;
-    font-size: 0.9rem;
+  #saveSection label,
+  .action-button {
+    width: 90%;
+    max-width: 300px;
+    text-align: center;
   }
 
-  #toggleShopBtn,
-  #toggleMissionsBtn {
-    position: fixed;
-    bottom: 10px;
+  #toggleShopBtn, #toggleMissionsBtn {
     right: 10px;
-    z-index: 1000;
-    font-size: 1rem;
-    padding: 8px 16px;
+    font-size: 0.95rem;
+    padding: 10px 14px;
   }
 
   #toggleMissionsBtn {
-    right: 10px;
-    bottom: 60px;
+    bottom: 65px;
   }
 
-  #shopPanel,
-  #missionsPanel {
+  #shopPanel, #missionsPanel {
+    width: 90%;
     left: 5%;
     right: 5%;
-    width: 90%;
-    bottom: 80px;
     max-height: 60vh;
+    bottom: 80px;
+  }
+
+  .fish {
+    width: 50px;
+    height: 30px;
+  }
+
+  .decoration {
+    width: 48px;
+    height: 48px;
   }
 
   .mission button {
-    width: 100%;
     font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+}
+
+
+
+/* 🌄 Ottimizzazione per dispositivi in orizzontale */
+@media screen and (max-height: 480px) and (orientation: landscape) {
+  header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 10px;
+    padding: 5px;
   }
 
-  #loginScreen input,
-  #loginScreen button {
+  .header-section {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  #aquarium {
+    height: 55vh !important;
+    width: 100% !important;
+    max-height: 55vh;
+    margin-bottom: 6px;
+  }
+
+  #actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  #actions button,
+  .action-button,
+  #saveSection button,
+  #saveSection label {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    margin: 4px;
+  }
+
+  #saveSection {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  #shopPanel, #missionsPanel {
+    max-height: 50vh;
     width: 90%;
-    font-size: 1rem;
+    left: 5%;
+    right: 5%;
+    bottom: 70px;
+  }
+
+  #toggleShopBtn, #toggleMissionsBtn {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    bottom: 10px;
+    right: 10px;
+  }
+
+  #toggleMissionsBtn {
+    bottom: 60px;
+  }
+
+  .fish {
+    width: 48px;
+    height: 32px;
+  }
+
+  .decoration {
+    width: 44px;
+    height: 44px;
+  }
+
+  .mission button {
+    font-size: 0.85rem;
+    padding: 6px 10px;
   }
 }
