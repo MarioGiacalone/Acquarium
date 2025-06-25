@@ -748,83 +748,104 @@ header {
     color: #fff59d;
     font-size: 0.9em;
 }
-/* Elimina tutte le media query esistenti e sostituisci con: */
 
+
+/* Mobile responsive */
 @media screen and (max-width: 768px) {
-  body {
-    transform: rotate(90deg);
-    transform-origin: left top;
-    width: 100vh;
-    height: 100vw;
-    overflow-x: hidden;
-    position: absolute;
-    top: 100%;
-    left: 0;
+  #viewportWrapper {
+    transform: none;
+    width: 100%;
+    height: 100%;
   }
 
-  #gameScreen, #loginScreen {
-    width: 100vh !important;
-    height: 100vw !important;
-    overflow-y: auto;
+  body, html {
+    overflow: auto;
+    position: relative;
+    height: auto;
   }
 
-  /* Correzioni per elementi specifici */
+  #loginScreen, #gameScreen {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    position: relative;
+  }
+
   header {
-    padding: 2vw;
-    font-size: 3vw;
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
   }
 
-  #actions {
-    padding: 1.5vw;
+  .header-section {
+    width: 100%;
+    justify-content: center;
   }
 
   #aquarium {
-    height: calc(100vw - 20vh) !important;
+    min-height: 50vh;
   }
-}
-body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  -webkit-text-size-adjust: 100%;
-  touch-action: manipulation;
-}
 
-/* @media screen and (orientation:portrait) DISATTIVATO */ {
-  body {
-    transform: rotate(90deg);
-    transform-origin: left top;
-    width: 100vh;
-    height: 100vw;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    overflow-x: hidden;
+  #shopPanel {
+    width: 90%;
+    right: 5%;
+    bottom: 100px;
+    max-height: 50vh;
   }
-}
 
-/* ✅ Solo scaling e centratura, niente blocchi o rotazioni */
-#viewportWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
-}
+  #missionsPanel {
+    width: 90%;
+    left: 5%;
+    bottom: 80px;
+    max-height: 40vh;
+  }
 
-@media screen and (max-width: 768px) {
-  #viewportWrapper {
-    transform: scale(0.85);
-    transform-origin: top left;
+  #toggleShopBtn, #toggleMissionsBtn {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  #loginScreen input {
+    width: 90%;
+    font-size: 1rem;
+  }
+
+  #loginScreen button {
+    padding: 12px 30px;
+    font-size: 1.2rem;
+  }
+
+  #actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #actions button {
+    padding: 8px 12px;
+    font-size: 0.8rem;
   }
 }
 
 @media screen and (max-width: 480px) {
-  #viewportWrapper {
-    transform: scale(0.7);
+  h1 {
+    font-size: 2.5rem;
   }
+
+  p.subtitle {
+    font-size: 1rem;
+  }
+
+  #shop > div {
+    min-width: 100px;
+    padding: 8px;
+  }
+
+  #shop img {
+    width: 60px;
+    height: 40px;
+  }
+  button, input, select {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
 }

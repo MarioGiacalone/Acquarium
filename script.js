@@ -1112,70 +1112,19 @@ function startBubbles() {
   setInterval(() => triggerBubbles(10), 20000);
 }
 
-resizeCanvasToAquarium();
-// Forza orientamento landscape
-function enforceLandscape() {
-  if (window.innerWidth < window.innerHeight && window.innerWidth < 768) {
-    document.body.classList.add('forced-landscape');
-    window.scrollTo(0, 0);
+function handleMobileLayout() {
+  if (window.innerWidth < 768) {
+    document.body.classList.add('mobile-view');
+    // Disabilita la rotazione forzata
+    document.body.style.transform = 'none';
+    document.body.style.width = '100%';
+    document.body.style.height = 'auto';
+    document.body.style.top = '0';
   } else {
-    document.body.classList.remove('forced-landscape');
+    document.body.classList.remove('mobile-view');
   }
 }
 
-// Blocca rotazione
-function lockOrientation() {
-  if (screen.orientation && screen.orientation.lock) {
-    screen.orientation.lock('landscape').catch(e => console.log(e));
-  }
-}
-
-// Inizializzazione
-window.addEventListener('DOMContentLoaded', () => {
-  enforceLandscape();
-  lockOrientation();
-});
-
-window.addEventListener('resize', enforceLandscape);
-
-// Inizializzazione e listener
-window.addEventListener('DOMContentLoaded', handleMobileScale);
-window.addEventListener('resize', handleMobileScale);
-// Fullscreen automatico al load
-document.addEventListener('DOMContentLoaded', () => {
-  const enterFullscreen = async () => {
-    try {
-      await document.documentElement.requestFullscreen();
-      
-      // Blocca orientamento su landscape (se supportato)
-      if (screen.orientation?.lock) {
-        await screen.orientation.lock('landscape');
-      }
-      
-      // Fix per iOS
-      setTimeout(() => {
-        window.scrollTo(0, 1);
-      }, 100);
-    } catch (err) {
-      console.log("Fullscreen error:", err);
-      // Fallback per browser senza fullscreen API
-      document.body.classList.add('fullscreen-fallback');
-    }
-  };
-
-  // Tentativo iniziale
-  enterFullscreen();
-
-  // Riprova dopo 1 secondo (per alcuni browser mobile)
-  setTimeout(enterFullscreen, 1000);
-
-  // Gestione cambio orientamento
-  window.addEventListener('resize', () => {
-    if (window.innerHeight > window.innerWidth) {
-      document.body.style.transform = 'rotate(90deg)';
-      document.body.style.width = '100vh';
-      document.body.style.height = '100vw';
-      document.body.style.top = '100%';
-    }
-  });
-});
+// Chiama all'inizio e al resize
+window.addEventListener('DOMContentLoaded', handleMobileLayout);
+window.addEventListener('resize', handleMobileLayout);
