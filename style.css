@@ -743,35 +743,25 @@ header {
     font-size: 0.9em;
 }
 
-@media screen and (orientation: portrait) {
-  html, body {
-    overflow: hidden !important;
-    height: 100vh !important;
-  }
 
-  body::before {
-    content: "Ruota il dispositivo per giocare in modalità orizzontale 🌊";
-    position: fixed;
+@media screen and (orientation: portrait) {
+  body {
+    transform: rotate(90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    overflow-x: hidden;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: #002244;
-    color: #fff;
-    font-size: 1.5rem;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
-    text-align: center;
-    padding: 20px;
   }
 
-  #gameScreen, #loginScreen {
-    display: none !important;
+  html {
+    height: 100vw;
+    overflow: hidden;
   }
 }
+
 
 /* 📱 Ottimizzazione per schermi stretti e verticali */
 @media screen and (orientation: landscape) {
