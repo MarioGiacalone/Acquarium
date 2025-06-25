@@ -984,3 +984,93 @@ header {
     padding: 5px 10px;
   }
 }
+
+
+
+/* 📵 Blocca vertical layout e forza landscape experience */
+@media screen and (orientation: portrait) {
+  body::before {
+    content: "Ruota il dispositivo per giocare in modalità orizzontale 🌊";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #004488;
+    color: white;
+    font-size: 1.5rem;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+  }
+
+  #gameScreen, #loginScreen {
+    display: none !important;
+  }
+}
+
+/* 🌄 Landscape layout ottimizzato */
+@media screen and (orientation: landscape) {
+  header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 10px;
+  }
+
+  #aquarium {
+    height: 70vh !important;
+    width: 100% !important;
+    margin-bottom: 8px;
+  }
+
+  #actions {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 6px 10px;
+  }
+
+  #actions button,
+  #saveSection button,
+  #saveSection label {
+    font-size: 0.85rem;
+    padding: 8px 14px;
+    border-radius: 12px;
+  }
+
+  #saveSection {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 6px 10px;
+  }
+
+  #toggleShopBtn,
+  #toggleMissionsBtn {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+    bottom: 10px;
+    right: 10px;
+    position: fixed;
+    z-index: 1000;
+  }
+
+  #toggleMissionsBtn {
+    bottom: 60px;
+  }
+
+  #shopPanel,
+  #missionsPanel {
+    bottom: 80px;
+    width: 80%;
+    left: 10%;
+    max-height: 60vh;
+  }
+}
