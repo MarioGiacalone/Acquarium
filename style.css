@@ -175,13 +175,19 @@ header {
     border: 3px solid gold;
 }
 
-.decoration {
-    position: absolute;
-    pointer-events: auto;
-    user-select: none;
-    border-radius: 6px;
-    cursor: pointer;
+
+ .decoration {
+  position: absolute;
+  width: 64px;  /* o la dimensione standard dell'immagine */
+  height: 64px;
+  cursor: grab;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
 }
+
+
 
 .decoration.selected {
     border: 3px solid gold;
@@ -741,85 +747,4 @@ header {
 .level-text {
     color: #fff59d;
     font-size: 0.9em;
-}
-
-
-@media screen and (orientation: portrait) {
-  body {
-    transform: rotate(90deg);
-    transform-origin: left top;
-    width: 100vh;
-    height: 100vw;
-    overflow-x: hidden;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  html {
-    height: 100vw;
-    overflow: hidden;
-  }
-}
-
-
-/* 📱 Ottimizzazione per schermi stretti e verticali */
-@media screen and (orientation: landscape) {
-  html, body {
-    overflow-x: hidden;
-  }
-
-  header {
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 6px;
-    padding: 5px 10px;
-  }
-
-  #aquarium {
-    width: 100% !important;
-    height: 90vh !important;
-    margin: 3px auto;
-  }
-
-  #actions, #saveSection {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    padding: 6px 10px;
-  }
-
-  #actions button,
-  #saveSection button,
-  #saveSection label {
-    font-size: 0.50rem;
-padding: 2px 4px;
-min-width: 60px;
-
-    white-space: nowrap;
-  }
-
-  #toggleShopBtn,
-  #toggleMissionsBtn {
-    font-size: 0.8rem;
-    padding: 8px 10px;
-    bottom: 10px;
-    right: 10px;
-    position: fixed;
-    z-index: 1000;
-  }
-
-  #toggleMissionsBtn {
-    bottom: 55px;
-  }
-
-  #shopPanel, #missionsPanel {
-    bottom: 80px;
-    max-height: 55vh;
-    width: 80%;
-    left: 10%;
-    right: 10%;
-    z-index: 999;
-  }
 }
