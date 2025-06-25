@@ -1,982 +1,122 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Happy Aquarium WebApp</title>
-<style>
-  body, html {
-    margin:0; padding:0; height:100vh; font-family: Arial, sans-serif;
-    background: #a0d8f7;
-    display: flex; justify-content: center; align-items: center;
-  }
-  #loginScreen, #gameScreen {
-    width: 100vw; height: 100vh; position: absolute; top: 0; left: 0;
-    background: #a0d8f7;
-  }
-  #loginScreen {
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-  }
-  #loginScreen input {
-    font-size: 1.2rem; padding: 10px; margin: 10px;
-  }
-  #loginScreen button {
-    padding: 10px 20px; font-size: 1.2rem; cursor: pointer;
-  }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Happy Aquarium WebApp</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0066cc">
+<!-- Favicon standard -->
+<link rel="icon" type="image/png" href="favicon.png">
 
-  #gameScreen {
-    display: none; flex-direction: column;
-  }
+<!-- Icona per installazione su dispositivo (PWA) -->
+<link rel="apple-touch-icon" href="icon-512.png">
 
-  header {
-    background: #0366d6; color: white; padding: 10px 20px; font-size: 1.5rem;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  #money {
-    font-weight: bold;
-  }
-  #aquarium {
-    position: relative;
-    flex: 1;
-    background: url('https://i.imgur.com/xBkYYtx.jpg') no-repeat center center/cover;
-    overflow: hidden;
-  }
-  .fish {
-    position: absolute;
-    width: 60px; height: 40px;
-    user-select: none;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    border-radius: 6px;
-  }
-  .fish img {
-    width: 100%; height: 100%;
-  }
-  .fish .hunger-bar {
-    position: absolute;
-    bottom: -8px; left: 0;
-    height: 5px; width: 100%;
-    background: #ddd;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .fish .hunger-bar-inner {
-    height: 100%;
-    background: #f44336;
-    width: 100%;
-  }
-  .fish.selected {
-    border: 3px solid gold;
-  }
-  .decoration {
-    position: absolute;
-    pointer-events: auto;
-    user-select: none;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  .decoration.selected {
-    border: 3px solid gold;
-  }
-  #shop {
-    background: #e1f0ff;
-    padding: 10px;
-    border-top: 2px solid #0366d6;
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-  }
-  #shop > div {
-    background: white;
-    border-radius: 8px;
-    padding: 10px;
-    min-width: 120px;
-    text-align: center;
-    box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    cursor: pointer;
-    user-select: none;
-  }
-  #shop > div strong {
-  font-size: 1.1em;
-  margin-bottom: 6px;
-  display: block;
-}
-
-#shop > div span.price {
-  display: block;
-  margin-top: 4px;
-  font-weight: bold;
-  color: #0366d6;
-}
-
-  #shop > div:hover {
-    box-shadow: 0 0 10px #0366d6;
-  }
-  #shop img {
-    width: 80px; height: 50px; object-fit: contain;
-  }
-  #actions {
-    background: #0366d6;
-    color: white;
-    padding: 5px 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  #actions button {
-    background: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-    color: #0366d6;
-    font-weight: bold;
-  }
-  #actions button:hover {
-    background: #024a9d;
-    color: white;
-  }
-  #actions button:disabled {
-    background: #ccc;
-    color: #888;
-    cursor: default;
-  }
-  #bgSelector {
-    margin-left: auto;
-    display: flex; align-items: center; gap: 10px;
-  }
-  #bgSelector select {
-    padding: 3px 6px;
-    border-radius: 4px;
-    border: none;
-    font-weight: bold;
-  }
-  @keyframes swim {
-  0%   { transform: translate(0, 0) scaleX(1); }
-  25%  { transform: translate(3px, 2px) scaleX(1); }
-  50%  { transform: translate(6px, 0) scaleX(1); }
-  75%  { transform: translate(3px, -2px) scaleX(1); }
-  100% { transform: translate(0, 0) scaleX(1); }
-}
-
-.fish {
-  animation: swim 3s infinite ease-in-out;
-}
-
-</style>
 </head>
 <body>
-
-<div id="loginScreen" style="
-  position: relative;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  overflow: hidden;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #e0f7fa;
-  text-align: center;
-  padding: 20px;
-">
-
-  <style>
-    /* Onde animate sullo sfondo */
-    #loginScreen::before,
-    #loginScreen::after {
-      content: "";
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      top: -50%;
-      left: -50%;
-      background: radial-gradient(circle at center, rgba(0, 229, 255, 0.3), transparent 70%);
-      border-radius: 40%;
-      animation: waveMove 15s linear infinite;
-      filter: blur(40px);
-      opacity: 0.5;
-      z-index: 0;
-    }
-    #loginScreen::after {
-      animation-delay: 7.5s;
-      opacity: 0.3;
-      background: radial-gradient(circle at center, rgba(0, 172, 238, 0.25), transparent 70%);
-    }
-    @keyframes waveMove {
-      0% { transform: translateX(0) translateY(0) rotate(0deg);}
-      50% { transform: translateX(30%) translateY(20%) rotate(20deg);}
-      100% { transform: translateX(0) translateY(0) rotate(0deg);}
-    }
-
-    h1 {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      font-size: 3.5rem;
-      margin: 0 0 15px 0;
-      text-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      z-index: 1;
-    }
-
-    p.subtitle {
-      font-weight: 600;
-      font-size: 1.2rem;
-      margin-bottom: 35px;
-      color: #a0e7ffcc;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.15);
-      z-index: 1;
-    }
-
-    #usernameInput {
-      width: 300px;
-      max-width: 90vw;
-      padding: 14px 20px;
-      font-size: 1.25rem;
-      border-radius: 40px;
-      border: none;
-      outline: none;
-      box-shadow:
-        inset 0 0 10px rgba(0, 229, 255, 0.7),
-        0 4px 15px rgba(0, 172, 238, 0.4);
-      background: linear-gradient(145deg, #008bbf, #00b4db);
-      color: #e0f7fa;
-      font-weight: 600;
-      text-align: center;
-      transition: box-shadow 0.3s ease;
-      z-index: 1;
-    }
-    #usernameInput::placeholder {
-      color: #a0e7ffcc;
-      font-weight: 500;
-    }
-    #usernameInput:focus {
-      box-shadow:
-        inset 0 0 18px #00e5ff,
-        0 6px 20px #00e5ff;
-    }
-
-    #loginBtn {
-      margin-top: 30px;
-      padding: 15px 60px;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #004d40;
-      background: linear-gradient(145deg, #00e5ff, #00bcd4);
-      border: none;
-      border-radius: 60px;
-      cursor: pointer;
-      box-shadow:
-        0 6px 15px rgba(0, 229, 255, 0.7);
-      transition:
-        background 0.3s ease,
-        box-shadow 0.3s ease,
-        color 0.3s ease;
-      z-index: 1;
-    }
-    #loginBtn:hover {
-      background: linear-gradient(145deg, #00bcd4, #0099aa);
-      color: #00251a;
-      box-shadow:
-        0 10px 25px rgba(0, 172, 238, 0.9);
-    }
-    #loginBtn:active {
-      transform: scale(0.96);
-    }
-
-    /* FOOTER */
-    footer {
-      position: absolute;
-      bottom: 10px;
-      width: 100%;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #a0e7ffaa;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      user-select: none;
-      z-index: 1;
-      cursor: default;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    /* Onde leggere animate nel footer */
-    footer::before {
-      content: "🌊 🌊 🌊";
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: -18px;
-      font-size: 1.4rem;
-      opacity: 0.3;
-      animation: waveFooter 3s linear infinite alternate;
-      user-select: none;
-    }
-    @keyframes waveFooter {
-      0% { transform: translateX(-50%) translateY(0); }
-      100% { transform: translateX(-50%) translateY(-6px); }
-    }
-
-  </style>
-
-  <h1>🐠 Happy Aquarium</h1>
-  <p class="subtitle">Inserisci il tuo username per iniziare a giocare</p>
-  <input type="text" id="usernameInput" placeholder="Inserisci username" autocomplete="off" />
-  <button id="loginBtn">Entra nell'acquario</button>
-
-  <footer>
-    &copy; 2025 Giuseppe Mario Giacalone - Happy Aquarium WebApp
-  </footer>
-</div>
-
-<div id="gameScreen">
-  <style>
-    #gameScreen {
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-      background: linear-gradient(to bottom, #001f3f, #003366);
-      padding: 1rem;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      max-width: 960px;
-      margin: auto;
-      position: relative;
-    }
-
-    header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0, 0, 50, 0.5);
-      backdrop-filter: blur(5px);
-      padding: 0.8rem 1rem;
-      border-radius: 12px;
-      margin-bottom: 1rem;
-      gap: 1rem;
-    }
-
-    header div {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    #bgSelector select {
-      padding: 0.4rem 0.6rem;
-      border-radius: 6px;
-      border: none;
-      background-color: #0077aa;
-      color: white;
-    }
-
-    #aquarium {
-      position: relative;
-      height: 350px;
-      background: url('img/aquarium_default.jpg') center/cover no-repeat;
-      border-radius: 14px;
-      border: 2px solid #004477;
-      overflow: hidden;
-      box-shadow: inset 0 0 20px #002244;
-    }
-
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      #aquarium {
-        height: 250px;
-      }
-    }
-  </style>
-
-  <header>
-    <div>👋 Benvenuto, <span id="userDisplay">Mario</span>!</div>
-    <div>💰 Soldi: $<span id="money">0</span></div>
-    <div id="bgSelector">
-      <label for="backgroundSelect">Sfondo:</label>
-      <select id="backgroundSelect">
-        <option value="default">Acquario blu</option>
-        <option value="ocean">Oceano</option>
-        <option value="reef">Barriera corallina</option>
-      </select>
+    <div id="loginScreen">
+        <h1>🐠 Happy Aquarium</h1>
+        <p class="subtitle">Inserisci il tuo username per iniziare a giocare</p>
+        <input type="text" id="usernameInput" placeholder="Inserisci username" autocomplete="off" />
+        <button id="loginBtn">Entra nell'acquario</button>
+        <footer>&copy; 2025 Giuseppe Mario Giacalone - Happy Aquarium WebApp</footer>
     </div>
-  </header>
 
-  <div id="aquarium"></div>
+    <div id="gameScreen"><canvas id="bubbleCanvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:5; pointer-events:none;"></canvas>
+        <header>
+            <div class="header-section">
+                <div class="header-item">
+                    <span>👋</span>
+                    <span id="userDisplay">Mario</span>
+                </div>
+                <div class="header-item">
+                    <span>💰</span>
+                    <span id="money">0</span>
+                </div>
+                <div class="header-item">
+                    <span>🔢</span>
+                    <span id="loginCountDisplay">0</span>
+                </div>
+            </div>
 
-  <div id="actions">
-    <button id="feedAllBtn">Dai da mangiare a tutti</button>
-    <button id="sellBtn" disabled>Vendi elemento selezionato</button>
-    <button id="editDecoBtn">Modifica decorazioni</button>
-  </div>
+            <div class="header-section">
+                <div class="level-container">
+                    <span>⭐</span>
+                    <div class="level-text" id="levelText">Lvl 1</div>
+                    <div class="level-bar">
+                        <div class="level-progress" id="levelProgress"></div>
+                    </div>
+                </div>
+            </div>
 
-  <div id="shop"></div>
+            <div class="header-section">
+                <button id="toggleAudioBtn">🔈</button>
+                <button id="logoutBtn">Esci</button>
+            </div>
+        </header>
+
+        <div class="header-section" style="margin-bottom: 10px; justify-content: center; gap: 15px;">
+            <div>
+                <label for="aquariumSelect">🌊 Acquario:</label>
+                <select id="aquariumSelect">
+                    <option value="0">1</option>
+                    <option value="1">2</option>
+                    <option value="2">3</option>
+                </select>
+            </div>
+
+            <div id="bgSelector">
+                <label for="backgroundSelect">🎨 Sfondo:</label>
+                <select id="backgroundSelect">
+                    <option value="default">Blu</option>
+                    <option value="ocean">Oceano</option>
+                    <option value="reef">Corallino</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="aquarium" style="
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    border-radius: 15px;
+    border: 5px solid #0356b5;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 0, 0.2);
+"></div>
+
+        <div id="actions">
+            <button id="feedAllBtn">Dai da mangiare a tutti</button>
+            <button id="sellBtn" disabled>Vendi elemento selezionato</button>
+            <button id="editDecoBtn">Modifica/seleziona</button>     
+             <div id="saveSection">
+             <button onclick="esportaDati()" style="padding: 6px 12px; border-radius: 15px;">📤 Esporta</button>
+             <button onclick="document.getElementById('importaFile').click()" style="padding: 6px 12px; border-radius: 15px;">📥 Importa</button>
+             <input type="file" id="importaFile" accept=".json" style="display: none;">
+           </div>
+        </div>
+        
+ 
+<br>
+<br>
+
+
+        <button id="toggleShopBtn" style="margin: 10px;">🛒 Shop</button>
+<div id="shopPanel" style="display: none;">
+    <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
+        <button id="showFishShopBtn">🐟 Pesci</button>
+        <button id="showDecorShopBtn">🌿 Decorazioni</button>
+    </div>
+    <div id="shop"></div>
 </div>
-
-<script>
-const fishTypes = [
-  {
-    id: "clownfish",
-    name: "Pesce pagliaccio",
-    img: "pagliaccio.png",
-    price: 50,
-    moneyPerFeed: 10
-  },
-  {
-    id: "angelfish",
-    name: "Pesce angelo",
-    img: "fish4.png",
-    price: 100,
-    moneyPerFeed: 20
-  },
-  {
-    id: "betta",
-    name: "Pesce combattente",
-    img: "combattente.png",
-    price: 150,
-    moneyPerFeed: 30
-  },
-    // Nuovo pesce aggiunto qui:
-  {
-    id: "goldfish",
-    name: "Pesce rosso",
-    img: "rosso.png", // immagine pesce rosso da web
-    price: 120,
-    moneyPerFeed: 15
-  }
-];
-
-const decorationTypes = [
-  {
-    id: "seaweed",
-    name: "Alga",
-    img: "https://i.imgur.com/0vdYmRW.png",
-    price: 30,
-    width: 60,
-    height: 100
-  },
-  
-  {
-    id: "coral",
-    name: "Corallo",
-    img: "https://i.imgur.com/jqYKfXj.png",
-    price: 80,
-    width: 80,
-    height: 60
-  }
-];
-
-const backgrounds = {
-  default: 'default.png',
-  ocean: 'https://i.imgur.com/QVJRcnK.jpg',
-  reef: 'https://i.imgur.com/dHb9Poo.jpg'
-};
-
-let user = null;
-let money = 0;
-let fishes = [];
-let decorations = [];
-let selectedFishId = null;
-let selectedDecorationId = null;
-let selectedType = null; // "fish" o "decoration"
-
-let editMode = false; // Modifica decorazioni attiva?
-
-const FIVE_HOURS_MS = 5 * 60 * 60 * 1000;
-
-function saveData() {
-  if (!user) return;
-  localStorage.setItem(`aquarium_user_${user}`, JSON.stringify({
-    money, fishes, decorations
-  }));
-}
-
-function loadData() {
-  if (!user) return;
-  const dataStr = localStorage.getItem(`aquarium_user_${user}`);
-  const now = Date.now();
-
-  if (dataStr) {
-    const data = JSON.parse(dataStr);
-    money = data.money || 0;
-    fishes = data.fishes || [];
-    decorations = data.decorations || [];
-
-    // Assicuriamoci che lastFedAt e lastMoneyFeed siano numeri validi
-    fishes.forEach(f => {
-      if (!f.lastFedAt) f.lastFedAt = now;
-      if (!f.lastMoneyFeed) f.lastMoneyFeed = 0;
-    });
-
-  } else {
-    money = 100;
-    fishes = [];
-    decorations = [];
-  }
-}
-
-function getHunger(fish) {
-  const now = Date.now();
-  if (!fish.lastFedAt) fish.lastFedAt = now;
-  const elapsed = now - fish.lastFedAt;
-  if (elapsed >= FIVE_HOURS_MS) return 0;
-  return 1 - elapsed / FIVE_HOURS_MS;
-}
-
-// --- LOGIN ---
-const loginScreen = document.getElementById("loginScreen");
-const gameScreen = document.getElementById("gameScreen");
-const usernameInput = document.getElementById("usernameInput");
-const loginBtn = document.getElementById("loginBtn");
-const userDisplay = document.getElementById("userDisplay");
-const moneyDisplay = document.getElementById("money");
-const aquarium = document.getElementById("aquarium");
-const shop = document.getElementById("shop");
-const feedAllBtn = document.getElementById("feedAllBtn");
-const sellBtn = document.getElementById("sellBtn");
-const backgroundSelect = document.getElementById("backgroundSelect");
-const editDecoBtn = document.getElementById("editDecoBtn");
-
-loginBtn.addEventListener("click", () => {
-  const name = usernameInput.value.trim();
-  if (name.length < 2) {
-    alert("Inserisci un username valido!");
-    return;
-  }
-  user = name;
-  loadData();
-  startGame();
-});
-
-function startGame() {
-  loginScreen.style.display = "none";
-  gameScreen.style.display = "flex";
-  userDisplay.textContent = user;
-  moneyDisplay.textContent = money.toFixed(2);
-  aquarium.style.backgroundImage = `url(${backgrounds.default})`;
-  renderShop();
-  renderAquarium();
-  updateFeedButtonState();
-  updateButtonsState();
-  animate();
-}
-
-// --- RENDER ---
-function renderAquarium() {
-  aquarium.innerHTML = "";
-
-  // Decorazioni
-  decorations.forEach(dec => {
-    const d = decorationTypes.find(d => d.id === dec.type);
-    if (!d) return;
-    const div = document.createElement("div");
-    div.className = "decoration";
-    div.dataset.id = dec.id;
-    div.dataset.type = "decoration";
-    div.style.left = dec.x + "px";
-    div.style.top = dec.y + "px";
-    div.style.width = d.width + "px";
-    div.style.height = d.height + "px";
-    div.style.backgroundImage = `url(${d.img})`;
-    div.style.backgroundSize = "contain";
-    div.style.backgroundRepeat = "no-repeat";
-    div.style.cursor = editMode ? "move" : "pointer";
-
-    if (!editMode) {
-      div.addEventListener("click", () => {
-        selectedFishId = null;
-        selectedDecorationId = dec.id;
-        selectedType = "decoration";
-        updateSelection();
-      });
-    } else {
-      enableDrag(div, dec);
-    }
-
-    aquarium.appendChild(div);
-  });
-
-  // Pesci
-  fishes.forEach(f => {
-    const fishType = fishTypes.find(ft => ft.id === f.type);
-    if (!fishType) return;
-
-    f.hunger = getHunger(f);
-
-    const fishDiv = document.createElement("div");
-    fishDiv.className = "fish";
-    fishDiv.style.animationDuration = (1.5 + Math.random()).toFixed(2) + "s";
-    fishDiv.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
-
-    fishDiv.dataset.id = f.id;
-    fishDiv.dataset.type = "fish";
-    fishDiv.style.left = f.x + "px";
-    fishDiv.style.top = f.y + "px";
-    fishDiv.style.transform = f.flip ? "scaleX(-1)" : "scaleX(1)";
-    fishDiv.title = `${fishType.name}\nFame: ${(f.hunger * 100).toFixed(0)}%`;
-    fishDiv.style.cursor = "default";
-
-    const img = document.createElement("img");
-    img.src = fishType.img;
-    fishDiv.appendChild(img);
-
-    const hungerBar = document.createElement("div");
-    hungerBar.className = "hunger-bar";
-    const hungerBarInner = document.createElement("div");
-    hungerBarInner.className = "hunger-bar-inner";
-    hungerBarInner.style.width = (f.hunger * 100) + "%";
-    hungerBar.appendChild(hungerBarInner);
-    fishDiv.appendChild(hungerBar);
-
-    aquarium.appendChild(fishDiv);
-  });
-
-  updateSelection();
-}
-
-function updateSelection() {
-  // Rimuovi tutte le selezioni
-  aquarium.querySelectorAll(".fish, .decoration").forEach(el => {
-    el.classList.remove("selected");
-  });
-
-  // Applica selezione al pesce
-  if (selectedType === "fish" && selectedFishId) {
-    const fishEl = aquarium.querySelector(`.fish[data-id="${selectedFishId}"]`);
-    if (fishEl) fishEl.classList.add("selected");
-  }
-
-  // Applica selezione alla decorazione
-  if (selectedType === "decoration" && selectedDecorationId) {
-    const decEl = aquarium.querySelector(`.decoration[data-id="${selectedDecorationId}"]`);
-    if (decEl) decEl.classList.add("selected");
-  }
-
-  updateButtonsState();
-}
-
-function renderShop() {
-  shop.innerHTML = "";
-
-  fishTypes.forEach(fish => {
-    const item = document.createElement("div");
-    item.innerHTML = `
-  <strong>${fish.name}</strong>
-  <img src="${fish.img}" alt="${fish.name}"/>
-  <span class="price">Prezzo: $${fish.price}</span>
-`;
-
-    item.title = `Compra ${fish.name} per $${fish.price}`;
-    item.onclick = () => buyFish(fish.id);
-    shop.appendChild(item);
-  });
-
-  decorationTypes.forEach(dec => {
-    const item = document.createElement("div");
-      item.innerHTML = `
-  <strong>${dec.name}</strong>
-  <img src="${dec.img}" alt="${dec.name}"/>
-  <span class="price">Prezzo: $${dec.price}</span>
-`;
-
-    item.title = `Compra ${dec.name} per $${dec.price}`;
-    item.onclick = () => buyDecoration(dec.id);
-    shop.appendChild(item);
-  });
-}
-
-// --- COMPRAVENDITA ---
-
-function buyFish(type) {
-  const fishType = fishTypes.find(f => f.id === type);
-  if (!fishType) return;
-  if (money < fishType.price) {
-    alert("Non hai abbastanza soldi!");
-    return;
-  }
-  money -= fishType.price;
-  const id = "fish_" + Date.now();
-  const newFish = {
-    id,
-    type,
-    x: Math.random() * (aquarium.clientWidth - 60),
-    y: Math.random() * (aquarium.clientHeight - 40),
-    hunger: 1,
-    flip: Math.random() > 0.5,
-    lastFedAt: Date.now(),
-    lastMoneyFeed: 0,
-    vx: (Math.random() * 2 - 1) * 0.5,
-    vy: (Math.random() * 2 - 1) * 0.5
-  };
-  fishes.push(newFish);
-  moneyDisplay.textContent = money.toFixed(2);
-  renderAquarium();
-  saveData();
-  updateFeedButtonState();
-}
-
-function buyDecoration(id) {
-  const decType = decorationTypes.find(d => d.id === id);
-  if (!decType) return;
-  if (money < decType.price) {
-    alert("Non hai abbastanza soldi!");
-    return;
-  }
-  money -= decType.price;
-
-  const newDec = {
-    id: "dec_" + Date.now(),
-    type: id,
-    x: Math.random() * (aquarium.clientWidth - decType.width),
-    y: Math.random() * (aquarium.clientHeight - decType.height),
-  };
-  decorations.push(newDec);
-  moneyDisplay.textContent = money.toFixed(2);
-  renderAquarium();
-  saveData();
-  updateFeedButtonState();
-}
-
-function sellSelected() {
-  if (editMode) {
-    alert("Disattiva la modalità modifica decorazioni prima di vendere!");
-    return;
-  }
-  if (selectedType === "fish" && selectedFishId) {
-    const idx = fishes.findIndex(f => f.id === selectedFishId);
-    if (idx === -1) {
-      alert("Pesce selezionato non trovato!");
-      return;
-    }
-    const fishType = fishTypes.find(f => f.id === fishes[idx].type);
-    if (!fishType) return;
-
-    money += Math.floor(fishType.price / 2);
-    fishes.splice(idx, 1);
-    selectedFishId = null;
-    selectedType = null;
-  } else if (selectedType === "decoration" && selectedDecorationId) {
-    const idx = decorations.findIndex(d => d.id === selectedDecorationId);
-    if (idx === -1) {
-      alert("Decorazione selezionata non trovata!");
-      return;
-    }
-    money += Math.floor(decorationTypes.find(d => d.id === decorations[idx].type).price / 2);
-    decorations.splice(idx, 1);
-    selectedDecorationId = null;
-    selectedType = null;
-  } else {
-    alert("Seleziona un pesce o una decorazione da vendere!");
-    return;
-  }
-  moneyDisplay.textContent = money.toFixed(2);
-  renderAquarium();
-  saveData();
-  updateFeedButtonState();
-  updateButtonsState();
-}
-
-// --- FEEDING ---
-
-feedAllBtn.addEventListener("click", () => {
-  if (editMode) {
-    alert("Disattiva la modalità modifica decorazioni prima di dare da mangiare!");
-    return;
-  }
-  let fedCount = 0;
-  const now = Date.now();
-
-  fishes.forEach(f => {
-    if (f.hunger < 1) {
-      const wasHungry = f.hunger < 0.5;
-      const canGainMoney = (now - f.lastMoneyFeed) > 60000; // 1 min
-      if (canGainMoney) {
-        const fishType = fishTypes.find(ft => ft.id === f.type);
-        if (fishType) {
-          money += fishType.moneyPerFeed;
-          moneyDisplay.textContent = money.toFixed(2);
-          f.lastMoneyFeed = now;
-        }
-      }
-      f.lastFedAt = now;
-      f.hunger = 1;
-      fedCount++;
-    }
-  });
-
-  if (fedCount === 0) alert("Tutti i pesci sono già sazi!");
-  else {
-    renderAquarium();
-    saveData();
-  }
-  updateFeedButtonState();
-});
-
-function updateFeedButtonState() {
-  feedAllBtn.disabled = editMode || fishes.length === 0;
-}
-
-// --- BUTTONS STATE ---
-
-sellBtn.addEventListener("click", sellSelected);
-
-backgroundSelect.addEventListener("change", () => {
-  aquarium.style.backgroundImage = `url(${backgrounds[backgroundSelect.value] || backgrounds.default})`;
-});
-
-function updateButtonsState() {
-  sellBtn.disabled = !(selectedType && (selectedFishId || selectedDecorationId)) || editMode;
-  feedAllBtn.disabled = editMode || fishes.length === 0;
-  editDecoBtn.textContent = editMode ? "Esci modifica decorazioni" : "Modifica decorazioni";
-}
-
-// --- DRAGGABLE DECORATIONS ---
-
-function enableDrag(element, decObj) {
-  let isDragging = false;
-  let startX, startY, origX, origY;
-
-  element.style.touchAction = "none";
-
-  function onPointerDown(e) {
-    e.preventDefault();
-    if (!editMode) return;
-    isDragging = true;
-    startX = e.clientX || e.touches[0].clientX;
-    startY = e.clientY || e.touches[0].clientY;
-    origX = decObj.x;
-    origY = decObj.y;
-    document.addEventListener("pointermove", onPointerMove);
-    document.addEventListener("pointerup", onPointerUp);
-    document.addEventListener("pointercancel", onPointerUp);
-  }
-
-  function onPointerMove(e) {
-    if (!isDragging) return;
-    const currentX = e.clientX || e.touches[0].clientX;
-    const currentY = e.clientY || e.touches[0].clientY;
-    const dx = currentX - startX;
-    const dy = currentY - startY;
-    let newX = origX + dx;
-    let newY = origY + dy;
-
-    // Limita il movimento all'interno dell'acquario
-    newX = Math.min(Math.max(0, newX), aquarium.clientWidth - element.offsetWidth);
-    newY = Math.min(Math.max(0, newY), aquarium.clientHeight - element.offsetHeight);
-
-    decObj.x = newX;
-    decObj.y = newY;
-
-    element.style.left = newX + "px";
-    element.style.top = newY + "px";
-  }
-
-  function onPointerUp(e) {
-    if (isDragging) {
-      isDragging = false;
-      saveData();
-      document.removeEventListener("pointermove", onPointerMove);
-      document.removeEventListener("pointerup", onPointerUp);
-      document.removeEventListener("pointercancel", onPointerUp);
-    }
-  }
-
-  element.addEventListener("pointerdown", onPointerDown);
-}
-
-// --- SELEZIONE ELEMENTI ---
-
-aquarium.addEventListener("click", e => {
-  if (editMode) return; // Non selezionare nulla mentre modifichi decorazioni
-
-  const target = e.target.closest(".fish, .decoration");
-  if (!target) {
-    selectedFishId = null;
-    selectedDecorationId = null;
-    selectedType = null;
-    updateSelection();
-    return;
-  }
-
-  if (target.classList.contains("fish")) {
-    selectedFishId = target.dataset.id;
-    selectedDecorationId = null;
-    selectedType = "fish";
-  } else if (target.classList.contains("decoration")) {
-    selectedDecorationId = target.dataset.id;
-    selectedFishId = null;
-    selectedType = "decoration";
-  } else {
-    selectedFishId = null;
-    selectedDecorationId = null;
-    selectedType = null;
-  }
-  updateSelection();
-});
-
-// --- MODIFICA DECORAZIONI ---
-
-editDecoBtn.addEventListener("click", () => {
-  editMode = !editMode;
-  renderAquarium();
-  updateButtonsState();
-});
-
-// --- ANIMAZIONE PESCI ---
-
-function animate() {
-  if (editMode) {
-    requestAnimationFrame(animate);
-    return;
-  }
-
-  const width = aquarium.clientWidth;
-  const height = aquarium.clientHeight;
-
-  fishes.forEach(f => {
-    if (typeof f.vx !== 'number') f.vx = (Math.random() * 2 - 1) * 0.5;
-    if (typeof f.vy !== 'number') f.vy = (Math.random() * 2 - 1) * 0.5;
-
-    f.x += f.vx;
-    f.y += f.vy;
-
-    if (f.x < 0) {
-      f.x = 0;
-      f.vx = Math.abs(f.vx);
-    } else if (f.x > width - 60) {
-      f.x = width - 60;
-      f.vx = -Math.abs(f.vx);
-    }
-
-    if (f.y < 0) {
-      f.y = 0;
-      f.vy = Math.abs(f.vy);
-    } else if (f.y > height - 40) {
-      f.y = height - 40;
-      f.vy = -Math.abs(f.vy);
-    }
-  });
-
-  aquarium.querySelectorAll(".fish").forEach(div => {
-    const fish = fishes.find(f => f.id === div.dataset.id);
-    if (fish) {
-      div.style.left = fish.x + "px";
-      div.style.top = fish.y + "px";
-
-      // Flip orizzontale in base a vx
-      const flip = (fish.vx < 0) ? -1 : 1;
-      div.style.transform = `scaleX(${flip})`;
-    }
-  });
-
-  requestAnimationFrame(animate);
-}
-
-
-
-
-</script>
+    </div>
+
+    <button id="toggleMissionsBtn" style="right: 10px; left: auto; bottom: 10px; top: auto;">🎯 Missioni</button>
+    <div id="missionsPanel">
+        <h3>Missioni Giornaliere <span id="refreshMissions">🔄</span></h3>
+        <div id="missionsList"></div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
