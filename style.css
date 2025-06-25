@@ -849,3 +849,50 @@ header {
   touch-action: manipulation;
 }
 }
+@media screen and (max-width: 768px) {
+  /* Posizionamento bottoni mobile */
+  #toggleShopBtn {
+    bottom: auto;
+    top: 60px;  /* Posizione sotto l'header */
+    right: 10px;
+  }
+
+  #toggleMissionsBtn {
+    bottom: auto;
+    top: 60px;  /* Stessa altezza dello shop button */
+    left: 10px;
+    right: auto;
+  }
+
+  /* Sposta i pannelli più in basso per non coprire i bottoni */
+  #shopPanel {
+    bottom: 80px;
+    top: 100px;  /* Inizia sotto i bottoni */
+  }
+
+  #missionsPanel {
+    bottom: 80px;
+    top: 100px;  /* Inizia sotto i bottoni */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  /* Aggiustamenti per schermi molto piccoli */
+  #toggleShopBtn, 
+  #toggleMissionsBtn {
+    top: 50px;  /* Ancora più in alto */
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  #shopPanel,
+  #missionsPanel {
+    top: 90px;  /* Più compatto */
+    max-height: 60vh;  /* Usa più spazio verticale */
+  }
+}
+#toggleShopBtn,
+#toggleMissionsBtn {
+  position: fixed;
+  z-index: 1001;  /* Sopra a tutto */
+}
