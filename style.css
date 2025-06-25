@@ -805,28 +805,3 @@ body {
     overflow-x: hidden;
   }
 }
-
-
-/* 📱 Adattamento fedele per telefono: scala e centra il contenuto */
-#viewportWrapper {
-  transform-origin: top left;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: #a0d8f7;
-}
-
-@media screen and (max-width: 768px) {
-  #viewportWrapper {
-    transform: scale(0.75);
-  }
-}
-
-@media screen and (max-width: 480px) {
-  #viewportWrapper {
-    transform: scale(0.6);
-  }
-}
