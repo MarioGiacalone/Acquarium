@@ -413,7 +413,6 @@ function startGame() {
   resizeCanvasToAquarium();
   animate();
   startBubbles();
-  enforcePortrait(); // Richiama al cambio schermata
 }
 
 function updateUI() {
@@ -1113,94 +1112,3 @@ function startBubbles() {
   setInterval(() => triggerBubbles(10), 20000);
 }
 
-function handleMobileLayout() {
-  if (window.innerWidth < 768) {
-    document.body.classList.add('mobile-view');
-    // Disabilita la rotazione forzata
-    document.body.style.transform = 'none';
-    document.body.style.width = '100%';
-    document.body.style.height = 'auto';
-    document.body.style.top = '0';
-  } else {
-    document.body.classList.remove('mobile-view');
-  }
-}
-
-// Chiama all'inizio e al resize
-window.addEventListener('DOMContentLoaded', handleMobileLayout);
-window.addEventListener('resize', handleMobileLayout);
-// Blocco orientamento avanzato
-function enforcePortrait() {
-  const isMobile = window.innerWidth <= 768;
-  const warning = document.getElementById('rotateWarning') || createOrientationWarning();
-  
-  function createOrientationWarning() {
-    const div = document.createElement('div');
-    div.id = 'rotateWarning';
-    div.innerHTML = `
-      <h2>🔄 Gira il telefono</h2>
-      <p>Il gioco è ottimizzato solo per la modalità verticale</p>
-      <p style="font-size:1rem;margin-top:20px;">Attiva anche il blocco rotazione del tuo dispositivo</p>
-    `;
-    document.body.appendChild(div);
-    return div;
-  }
-
-  function checkOrientation() {
-    const isPortrait = window.innerHeight > window.innerWidth;
-    
-    if (isMobile) {
-      document.body.classList.toggle('portrait-only', isPortrait);
-      warning.style.display = isPortrait ? 'none' : 'flex';
-      
-      if (!isPortrait) {
-        document.getElementById('gameScreen')?.style.setProperty('display', 'none', 'important');
-        document.getElementById('loginScreen')?.style.setProperty('display', 'none', 'important');
-      } else {
-        document.getElementById('gameScreen')?.style.removeProperty('display');
-        document.getElementById('loginScreen')?.style.removeProperty('display');
-      }
-    }
-  }
-
-  // Blocco programmatico (dove supportato)
-  function lockOrientation() {
-    if (screen.orientation?.lock) {
-      screen.orientation.lock('portrait').catch(e => {
-        console.warn("Orientation lock failed:", e);
-      });
-    } else if (window.screen.lockOrientation) { // Legacy
-      window.screen.lockOrientation('portrait');
-    }
-  }
-
-  // Inizializzazione
-  if (isMobile) {
-    lockOrientation();
-    checkOrientation();
-    
-    window.addEventListener('resize', () => {
-      checkOrientation();
-      // Forza ridimensionamento elementi
-      setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-        if (window.innerHeight > window.innerWidth) {
-          window.scrollTo(0, 0);
-        }
-      }, 100);
-    });
-
-    // Fix per iOS
-    document.addEventListener('touchmove', (e) => {
-      if (window.innerWidth > window.innerHeight) {
-        e.preventDefault();
-      }
-    }, { passive: false });
-  }
-}
-
-// Avvia al caricamento
-document.addEventListener('DOMContentLoaded', enforcePortrait);
-window.addEventListener('load', enforcePortrait);
-
-// Se usi un router o cambi schermate, richiama enforcePortrait()
