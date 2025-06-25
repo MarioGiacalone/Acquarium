@@ -413,6 +413,7 @@ function startGame() {
   resizeCanvasToAquarium();
   animate();
   startBubbles();
+  enforcePortrait(); // Richiama al cambio schermata
 }
 
 function updateUI() {
@@ -1128,141 +1129,78 @@ function handleMobileLayout() {
 // Chiama all'inizio e al resize
 window.addEventListener('DOMContentLoaded', handleMobileLayout);
 window.addEventListener('resize', handleMobileLayout);
-// Blocco orientamento e gestione mobile
-function setupMobileLayout() {
-  // 1. Rileva se è mobile
+// Blocco orientamento avanzato
+function enforcePortrait() {
   const isMobile = window.innerWidth <= 768;
+  const warning = document.getElementById('rotateWarning') || createOrientationWarning();
   
-  // 2. Blocca orientamento portrait (se supportato)
-  function lockPortrait() {
-    if (screen.orientation?.lock) {
-      screen.orientation.lock('portrait')
-        .catch(e => console.log("Lock orientation failed:", e));
-    }
-  }
-
-  // 3. Mostra avviso se in orizzontale
-  function checkOrientation() {
-    const warning = document.getElementById('rotateWarning');
-    if (window.innerWidth > window.innerHeight && isMobile) {
-      if (!warning) {
-        createOrientationWarning();
-      } else {
-        warning.style.display = 'flex';
-      }
-    } else if (warning) {
-      warning.style.display = 'none';
-    }
-  }
-
-  // 4. Crea avviso orientamento (se non esiste)
   function createOrientationWarning() {
-    const warning = document.createElement('div');
-    warning.id = 'rotateWarning';
-    warning.innerHTML = `
-      <h2>🔄 Si prega di ruotare il telefono in verticale</h2>
-      <p>Per la migliore esperienza di gioco</p>
+    const div = document.createElement('div');
+    div.id = 'rotateWarning';
+    div.innerHTML = `
+      <h2>🔄 Gira il telefono</h2>
+      <p>Il gioco è ottimizzato solo per la modalità verticale</p>
+      <p style="font-size:1rem;margin-top:20px;">Attiva anche il blocco rotazione del tuo dispositivo</p>
     `;
-    Object.assign(warning.style, {
-      display: 'none',
-      position: 'fixed',
-      top: '0',
-      left: '0',
-      width: '100%',
-      height: '100%',
-      background: '#a0d8f7',
-      zIndex: '9999',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      textAlign: 'center',
-      padding: '20px'
-    });
-    document.body.appendChild(warning);
+    document.body.appendChild(div);
+    return div;
   }
 
-  // 5. Adatta dinamicamente elementi mobile
-  function adaptMobileElements() {
-    if (!isMobile) return;
+  function checkOrientation() {
+    const isPortrait = window.innerHeight > window.innerWidth;
     
-    // Riduci animazioni per performance
-    document.documentElement.style.scrollBehavior = 'auto';
-    
-    // Ottimizza i bottoni per il touch
-    document.querySelectorAll('button').forEach(btn => {
-      btn.style.touchAction = 'manipulation';
-      btn.style.webkitTapHighlightColor = 'transparent';
-    });
+    if (isMobile) {
+      document.body.classList.toggle('portrait-only', isPortrait);
+      warning.style.display = isPortrait ? 'none' : 'flex';
+      
+      if (!isPortrait) {
+        document.getElementById('gameScreen')?.style.setProperty('display', 'none', 'important');
+        document.getElementById('loginScreen')?.style.setProperty('display', 'none', 'important');
+      } else {
+        document.getElementById('gameScreen')?.style.removeProperty('display');
+        document.getElementById('loginScreen')?.style.removeProperty('display');
+      }
+    }
+  }
+
+  // Blocco programmatico (dove supportato)
+  function lockOrientation() {
+    if (screen.orientation?.lock) {
+      screen.orientation.lock('portrait').catch(e => {
+        console.warn("Orientation lock failed:", e);
+      });
+    } else if (window.screen.lockOrientation) { // Legacy
+      window.screen.lockOrientation('portrait');
+    }
   }
 
   // Inizializzazione
   if (isMobile) {
-    lockPortrait();
-    createOrientationWarning();
-    adaptMobileElements();
+    lockOrientation();
+    checkOrientation();
     
-    // Event listeners
     window.addEventListener('resize', () => {
       checkOrientation();
-      adaptMobileElements();
+      // Forza ridimensionamento elementi
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+        if (window.innerHeight > window.innerWidth) {
+          window.scrollTo(0, 0);
+        }
+      }, 100);
     });
-  }
 
-  checkOrientation(); // Controllo iniziale
-}
-
-// Avvia tutto quando il DOM è pronto
-document.addEventListener('DOMContentLoaded', () => {
-  setupMobileLayout();
-  
-  // Evento speciale per iOS per forzare il ridimensionamento
-  window.addEventListener('orientationchange', () => {
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-      document.activeElement?.blur();
-    }, 100);
-  });
-});
-
-// Gestione dinamica dei pannelli mobile
-function setupMobilePanels() {
-  const toggleShopBtn = document.getElementById('toggleShopBtn');
-  const toggleMissionsBtn = document.getElementById('toggleMissionsBtn');
-  const shopPanel = document.getElementById('shopPanel');
-  const missionsPanel = document.getElementById('missionsPanel');
-
-  if (toggleShopBtn && shopPanel) {
-    toggleShopBtn.addEventListener('click', () => {
-      shopPanel.style.display = shopPanel.style.display === 'block' ? 'none' : 'block';
-      if (shopPanel.style.display === 'block') {
-        missionsPanel.style.display = 'none';
+    // Fix per iOS
+    document.addEventListener('touchmove', (e) => {
+      if (window.innerWidth > window.innerHeight) {
+        e.preventDefault();
       }
-    });
-  }
-
-  if (toggleMissionsBtn && missionsPanel) {
-    toggleMissionsBtn.addEventListener('click', () => {
-      missionsPanel.style.display = missionsPanel.style.display === 'block' ? 'none' : 'block';
-      if (missionsPanel.style.display === 'block') {
-        shopPanel.style.display = 'none';
-      }
-    });
+    }, { passive: false });
   }
 }
 
-// Chiamata quando si passa alla game screen
-function initMobileGame() {
-  setupMobilePanels();
-  
-  // Chiudi pannelli quando si tocca l'acquario
-  const aquarium = document.getElementById('aquarium');
-  if (aquarium) {
-    aquarium.addEventListener('click', () => {
-      document.getElementById('shopPanel').style.display = 'none';
-      document.getElementById('missionsPanel').style.display = 'none';
-    });
-  }
-}
+// Avvia al caricamento
+document.addEventListener('DOMContentLoaded', enforcePortrait);
+window.addEventListener('load', enforcePortrait);
 
-// Aggiungi questo nella funzione startGame() dopo renderAquarium():
-// initMobileGame();
+// Se usi un router o cambi schermate, richiama enforcePortrait()
