@@ -3,8 +3,9 @@
   "short_name": "Aquarium",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "landscape",
   "background_color": "#0099ff",
-  "theme_color": "#0066cc",
+  "theme_color": "#0077be",
   "icons": [
     {
       "src": "icon-192.png",
