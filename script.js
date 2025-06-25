@@ -1113,33 +1113,69 @@ function startBubbles() {
 }
 
 resizeCanvasToAquarium();
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
-    .then(() => console.log('Service Worker registrato'))
-    .catch(err => console.log('Service Worker errore:', err));
-}
-// Funzione per gestire il ridimensionamento
-function handleMobileScale() {
-  const viewportWidth = window.innerWidth;
-  const baseWidth = 1200;
-  
-  if (viewportWidth < baseWidth) {
-    const scale = viewportWidth / baseWidth;
-    document.body.style.transform = `scale(${scale})`;
-    document.body.style.width = `${baseWidth}px`;
-    document.body.style.height = '800px';
-    document.body.style.position = 'absolute';
-    document.body.style.left = '0';
-    document.body.style.top = '0';
-    document.body.style.transformOrigin = 'top left';
+// Forza orientamento landscape
+function enforceLandscape() {
+  if (window.innerWidth < window.innerHeight && window.innerWidth < 768) {
+    document.body.classList.add('forced-landscape');
+    window.scrollTo(0, 0);
   } else {
-    document.body.style.transform = 'none';
-    document.body.style.width = '100%';
-    document.body.style.height = '100%';
-    document.body.style.position = 'relative';
+    document.body.classList.remove('forced-landscape');
   }
 }
+
+// Blocca rotazione
+function lockOrientation() {
+  if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock('landscape').catch(e => console.log(e));
+  }
+}
+
+// Inizializzazione
+window.addEventListener('DOMContentLoaded', () => {
+  enforceLandscape();
+  lockOrientation();
+});
+
+window.addEventListener('resize', enforceLandscape);
 
 // Inizializzazione e listener
 window.addEventListener('DOMContentLoaded', handleMobileScale);
 window.addEventListener('resize', handleMobileScale);
+// Fullscreen automatico al load
+document.addEventListener('DOMContentLoaded', () => {
+  const enterFullscreen = async () => {
+    try {
+      await document.documentElement.requestFullscreen();
+      
+      // Blocca orientamento su landscape (se supportato)
+      if (screen.orientation?.lock) {
+        await screen.orientation.lock('landscape');
+      }
+      
+      // Fix per iOS
+      setTimeout(() => {
+        window.scrollTo(0, 1);
+      }, 100);
+    } catch (err) {
+      console.log("Fullscreen error:", err);
+      // Fallback per browser senza fullscreen API
+      document.body.classList.add('fullscreen-fallback');
+    }
+  };
+
+  // Tentativo iniziale
+  enterFullscreen();
+
+  // Riprova dopo 1 secondo (per alcuni browser mobile)
+  setTimeout(enterFullscreen, 1000);
+
+  // Gestione cambio orientamento
+  window.addEventListener('resize', () => {
+    if (window.innerHeight > window.innerWidth) {
+      document.body.style.transform = 'rotate(90deg)';
+      document.body.style.width = '100vh';
+      document.body.style.height = '100vw';
+      document.body.style.top = '100%';
+    }
+  });
+});

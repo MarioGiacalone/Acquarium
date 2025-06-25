@@ -748,24 +748,60 @@ header {
     color: #fff59d;
     font-size: 0.9em;
 }
-@media screen and (max-width: 1200px) {
-  html, body {
-    transform-origin: top left;
-    width: 1200px;
-    height: 800px;
-    overflow: hidden !important;
-    position: fixed;
-  }
-  
+/* Elimina tutte le media query esistenti e sostituisci con: */
+
+@media screen and (max-width: 768px) {
   body {
-    transform: scale(calc(100vw / 1200));
-    width: 1200px;
-    height: 800px;
+    transform: rotate(90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
   }
-  
+
   #gameScreen, #loginScreen {
-    width: 1200px !important;
-    height: 800px !important;
-    transform-origin: top left;
+    width: 100vh !important;
+    height: 100vw !important;
+    overflow-y: auto;
+  }
+
+  /* Correzioni per elementi specifici */
+  header {
+    padding: 2vw;
+    font-size: 3vw;
+  }
+
+  #actions {
+    padding: 1.5vw;
+  }
+
+  #aquarium {
+    height: calc(100vw - 20vh) !important;
+  }
+}
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+@media screen and (orientation:portrait) {
+  body {
+    transform: rotate(90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    overflow-x: hidden;
   }
 }

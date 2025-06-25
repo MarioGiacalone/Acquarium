@@ -1,21 +1,15 @@
 {
   "name": "Happy Aquarium",
   "short_name": "Aquarium",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "orientation": "landscape",
+  "start_url": "index.html",
+"display": "fullscreen",
   "background_color": "#0099ff",
-  "theme_color": "#0077be",
+  "theme_color": "#0066cc",
   "icons": [
     {
       "src": "icon-192.png",
       "type": "image/png",
       "sizes": "192x192"
-    },
-    {
-      "src": "icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
     }
   ]
 }
