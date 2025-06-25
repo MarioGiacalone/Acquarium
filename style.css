@@ -743,252 +743,12 @@ header {
     font-size: 0.9em;
 }
 
-
-/* 📱 Ottimizzazione per schermi stretti e verticali */
-@media screen and (max-width: 480px) {
-  header {
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .header-section {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  #aquarium {
-    height: 45vh !important;
-    width: 100% !important;
-    max-height: 45vh;
-    margin-bottom: 8px;
-  }
-
-  #actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-  }
-
-  #saveSection {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  #saveSection button,
-  #saveSection label,
-  .action-button {
-    width: 90%;
-    max-width: 300px;
-    text-align: center;
-  }
-
-  #toggleShopBtn, #toggleMissionsBtn {
-    right: 10px;
-    font-size: 0.95rem;
-    padding: 10px 14px;
-  }
-
-  #toggleMissionsBtn {
-    bottom: 65px;
-  }
-
-  #shopPanel, #missionsPanel {
-    width: 90%;
-    left: 5%;
-    right: 5%;
-    max-height: 60vh;
-    bottom: 80px;
-  }
-
-  .fish {
-    width: 50px;
-    height: 30px;
-  }
-
-  .decoration {
-    width: 48px;
-    height: 48px;
-  }
-
-  .mission button {
-    font-size: 0.9rem;
-    padding: 6px 12px;
-  }
-}
-
-
-
-/* 🌄 Ottimizzazione per dispositivi in orizzontale */
-@media screen and (max-height: 480px) and (orientation: landscape) {
-  header {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    gap: 10px;
-    padding: 5px;
-  }
-
-  .header-section {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  #aquarium {
-    height: 55vh !important;
-    width: 100% !important;
-    max-height: 55vh;
-    margin-bottom: 6px;
-  }
-
-  #actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  #actions button,
-  .action-button,
-  #saveSection button,
-  #saveSection label {
-    font-size: 0.9rem;
-    padding: 8px 12px;
-    margin: 4px;
-  }
-
-  #saveSection {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  #shopPanel, #missionsPanel {
-    max-height: 50vh;
-    width: 90%;
-    left: 5%;
-    right: 5%;
-    bottom: 70px;
-  }
-
-  #toggleShopBtn, #toggleMissionsBtn {
-    font-size: 0.9rem;
-    padding: 8px 12px;
-    bottom: 10px;
-    right: 10px;
-  }
-
-  #toggleMissionsBtn {
-    bottom: 60px;
-  }
-
-  .fish {
-    width: 48px;
-    height: 32px;
-  }
-
-  .decoration {
-    width: 44px;
-    height: 44px;
-  }
-
-  .mission button {
-    font-size: 0.85rem;
-    padding: 6px 10px;
-  }
-}
-
-
-
-/* 📱 Mobile: layout compatto con bottoni in linea e acquario grande */
-@media screen and (max-width: 768px) {
-  header {
-    flex-direction: column;
-    align-items: center;
-    padding: 5px 10px;
-    gap: 5px;
-  }
-
-  .header-section {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 5px;
-  }
-
-  #aquarium {
-    width: 100%;
-    height: 60vh !important;
-    max-height: 60vh;
-    margin-bottom: 6px;
-  }
-
-  #actions {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-    padding: 5px;
-  }
-
-  #actions button,
-  .action-button,
-  #saveSection button,
-  #saveSection label {
-    font-size: 0.75rem;
-    padding: 6px 10px;
-    border-radius: 12px;
-  }
-
-  #saveSection {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 5px;
-    padding: 5px;
-  }
-
-  #toggleShopBtn,
-  #toggleMissionsBtn {
-    bottom: 12px;
-    right: 10px;
-    font-size: 0.75rem;
-    padding: 6px 10px;
-  }
-
-  #toggleMissionsBtn {
-    bottom: 50px;
-  }
-
-  #shopPanel, #missionsPanel {
-    width: 92%;
-    left: 4%;
-    right: 4%;
-    max-height: 55vh;
-    bottom: 75px;
-  }
-
-  .fish {
-    width: 48px;
-    height: 30px;
-  }
-
-  .decoration {
-    width: 44px;
-    height: 44px;
-  }
-
-  .mission button {
-    font-size: 0.8rem;
-    padding: 5px 10px;
-  }
-}
-
-
-
-/* 📵 Blocca vertical layout e forza landscape experience */
 @media screen and (orientation: portrait) {
+  html, body {
+    overflow: hidden !important;
+    height: 100vh !important;
+  }
+
   body::before {
     content: "Ruota il dispositivo per giocare in modalità orizzontale 🌊";
     position: fixed;
@@ -996,15 +756,16 @@ header {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #004488;
-    color: white;
+    background: #002244;
+    color: #fff;
     font-size: 1.5rem;
-    z-index: 9999;
+    font-weight: bold;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    z-index: 99999;
     text-align: center;
+    padding: 20px;
   }
 
   #gameScreen, #loginScreen {
@@ -1012,50 +773,46 @@ header {
   }
 }
 
-/* 🌄 Landscape layout ottimizzato */
+/* 📱 Ottimizzazione per schermi stretti e verticali */
 @media screen and (orientation: landscape) {
+  html, body {
+    overflow-x: hidden;
+  }
+
   header {
-    flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 8px;
-    padding: 6px 10px;
+    gap: 6px;
+    padding: 5px 10px;
   }
 
   #aquarium {
-    height: 70vh !important;
     width: 100% !important;
-    margin-bottom: 8px;
+    height: 75vh !important;
+    margin: 10px auto;
   }
 
-  #actions {
+  #actions, #saveSection {
     display: flex;
-    flex-wrap: nowrap;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
     padding: 6px 10px;
   }
 
   #actions button,
   #saveSection button,
   #saveSection label {
-    font-size: 0.85rem;
-    padding: 8px 14px;
-    border-radius: 12px;
-  }
-
-  #saveSection {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: center;
-    gap: 10px;
+    font-size: 0.8rem;
     padding: 6px 10px;
+    min-width: 100px;
+    white-space: nowrap;
   }
 
   #toggleShopBtn,
   #toggleMissionsBtn {
     font-size: 0.8rem;
-    padding: 8px 12px;
+    padding: 8px 10px;
     bottom: 10px;
     right: 10px;
     position: fixed;
@@ -1063,14 +820,15 @@ header {
   }
 
   #toggleMissionsBtn {
-    bottom: 60px;
+    bottom: 55px;
   }
 
-  #shopPanel,
-  #missionsPanel {
+  #shopPanel, #missionsPanel {
     bottom: 80px;
+    max-height: 55vh;
     width: 80%;
     left: 10%;
-    max-height: 60vh;
+    right: 10%;
+    z-index: 999;
   }
 }
