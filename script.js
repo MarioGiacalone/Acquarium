@@ -1112,3 +1112,19 @@ function startBubbles() {
   setInterval(() => triggerBubbles(10), 20000);
 }
 
+function handleMobileLayout() {
+  if (window.innerWidth < 768) {
+    document.body.classList.add('mobile-view');
+    // Disabilita la rotazione forzata
+    document.body.style.transform = 'none';
+    document.body.style.width = '100%';
+    document.body.style.height = 'auto';
+    document.body.style.top = '0';
+  } else {
+    document.body.classList.remove('mobile-view');
+  }
+}
+
+// Chiama all'inizio e al resize
+window.addEventListener('DOMContentLoaded', handleMobileLayout);
+window.addEventListener('resize', handleMobileLayout);
