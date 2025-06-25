@@ -748,3 +748,24 @@ header {
     color: #fff59d;
     font-size: 0.9em;
 }
+@media screen and (max-width: 1200px) {
+  html, body {
+    transform-origin: top left;
+    width: 1200px;
+    height: 800px;
+    overflow: hidden !important;
+    position: fixed;
+  }
+  
+  body {
+    transform: scale(calc(100vw / 1200));
+    width: 1200px;
+    height: 800px;
+  }
+  
+  #gameScreen, #loginScreen {
+    width: 1200px !important;
+    height: 800px !important;
+    transform-origin: top left;
+  }
+}

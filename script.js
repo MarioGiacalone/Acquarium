@@ -1118,3 +1118,28 @@ if ('serviceWorker' in navigator) {
     .then(() => console.log('Service Worker registrato'))
     .catch(err => console.log('Service Worker errore:', err));
 }
+// Funzione per gestire il ridimensionamento
+function handleMobileScale() {
+  const viewportWidth = window.innerWidth;
+  const baseWidth = 1200;
+  
+  if (viewportWidth < baseWidth) {
+    const scale = viewportWidth / baseWidth;
+    document.body.style.transform = `scale(${scale})`;
+    document.body.style.width = `${baseWidth}px`;
+    document.body.style.height = '800px';
+    document.body.style.position = 'absolute';
+    document.body.style.left = '0';
+    document.body.style.top = '0';
+    document.body.style.transformOrigin = 'top left';
+  } else {
+    document.body.style.transform = 'none';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    document.body.style.position = 'relative';
+  }
+}
+
+// Inizializzazione e listener
+window.addEventListener('DOMContentLoaded', handleMobileScale);
+window.addEventListener('resize', handleMobileScale);
